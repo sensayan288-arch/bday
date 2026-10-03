@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story & Birthday Countdown</title>
+    <style>
+        :root {
+            --primary-pink: #ff758c;
+            --secondary-pink: #ff7eb3;
+            --dark-pink: #de546a;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Raining Hearts Canvas */
+        #canvas-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        /* Glassmorphism Cards */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(255, 117, 140, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        h1, h2 {
+            color: var(--dark-pink);
+            margin-bottom: 15px;
+        }
+
+        /* Image Slot Styles */
+        .image-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .image-frame {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            overflow: hidden;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-placeholder {
+            color: #aaa;
+            font-size: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: var(--primary-pink);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .upload-btn:hover {
+            background: var(--dark-pink);
+        }
+
+        /* Counter Displays */
+        .counter-display {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            min-width: 80px;
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--dark-pink);
+        }
+
+        .time-box label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #777;
+            letter-spacing: 1px;
+        }
+
+        /* Hidden Birthday Message */
+        .hidden-message-box {
+            background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 100%);
+            border: 2px dashed var(--primary-pink);
+        }
+
+        .locked-state {
+            color: #888;
+            padding: 20px;
+        }
+
+        .locked-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .unlocked-message {
+            display: none;
+            color: var(--dark-pink);
+            font-size: 18px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: left;
+            padding: 10px;
+        }
+
+        /* Music Controller */
+        .music-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .music-input-label {
+            font-size: 14px;
+            color: #555;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 300px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-hearts"></canvas>
+
+    <div class="main-container">
+        
+        <!-- Header Card -->
+        <div class="card">
+            <h1>Forever & Always 💖</h1>
+            <p style="color: #666; font-style: italic;">Every second with you is a blessing</p>
+        </div>
+
+        <!-- Image Upload Card -->
+        <div class="card image-section">
+            <h2>Our Beautiful Moments</h2>
+            <div class="image-frame" onclick="document.getElementById('partner-img-input').click()">
+                <div id="upload-placeholder" class="upload-placeholder">Tap to upload her beautiful picture ✨</div>
+                <img id="partner-display-img" src="" style="display:none;" alt="My Partner">
+            </div>
+            <input type="file" id="partner-img-input" class="file-input" accept="image/*">
+            <button class="upload-btn" onclick="document.getElementById('partner-img-input').click()">Change Picture</button>
+        </div>
+
+        <!-- Counter 1: Anniversary Count Down / Up -->
+        <div class="card">
+            <h2>Our Journey Began</h2>
+            <p style="font-weight: 600; color: #555; margin-bottom: 5px;">July 13th, 2026</p>
+            <div id="anniversary-counter" class="counter-display"></div>
+        </div>
+
+        <!-- Counter 2: Birthday Countdown -->
+        <div class="card">
+            <h2>Counting Down to Her Birthday 🎉</h2>
+            <p style="font-weight: 600; color: #555; margin-bottom: 5px;">October 24th, 2026</p>
+            <div id="birthday-counter" class="counter-display"></div>
+        </div>
+
+        <!-- Hidden Birthday Message Card -->
+        <div class="card hidden-message-box">
+            <h2>A Secret Message For Her Eyes Only 🤫</h2>
+            
+            <!-- Locked View -->
+            <div id="secret-locked" class="locked-state">
+                <div class="locked-icon">🔒</div>
+                <p>This letter automatically unlocks on her birthday: <strong>October 24, 2026</strong>!</p>
+            </div>
+
+            <!-- Unlocked View -->
+            <div id="secret-unlocked" class="unlocked-message">
+✨ **Happy Birthday, My Love!** ✨
+
+[Type your custom secret love letter inside the HTML file here! Tell her how much she means to you, your favorite memories together, and all the reasons you love her.]
+
+Forever Yours. ❤️
+            </div>
+        </div>
+
+        <!-- Background Music Customizer -->
+        <div class="card music-card">
+            <h2>Our Playlist 🎵</h2>
+            <p style="font-size: 14px; color: #666;">Upload and play your favorite romantic songs in the background</p>
+            <div class="audio-controls">
+                <label for="music-upload" class="music-input-label" id="song-name">Choose an audio file (.mp3)</label>
+                <input type="file" id="music-upload" class="file-input" accept="audio/*">
+            </div>
+            <audio id="bg-audio" controls loop></audio>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. RAINING HEARTS ANIMATION ---
+        const canvas = document.getElementById('canvas-hearts');
+        const ctx = canvas.getContext('2d');
+
+        let hearts = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Heart {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -canvas.height - 20;
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 1.5 + 1;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.swing = Math.random() * 2;
+                this.swingSpeed = Math.random() * 0.02;
+                this.time = Math.random() * 100;
+            }
+
+            update() {
+                this.y += this.speed;
+                this.time += this.swingSpeed;
+                this.x += Math.sin(this.time) * 0.5;
+
+                if (this.y > canvas.height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
